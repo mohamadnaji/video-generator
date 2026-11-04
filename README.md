@@ -1,38 +1,82 @@
 # Physics Playground
 
-Small physics games that run in the browser. The home page (`index.html`) lists every game so you can pick one to play.
+Small physics games that run in the browser. The home page lists every game so you can pick one to play.
 
-## Games
+| Game | What it does |
+| --- | --- |
+| **Swell Escape** | A ball bounces inside a closed shape with one small opening. Every hit swells the wall at that spot, repeat hits make it grow faster, and the ball keeps going until it gets out. Random shapes, presets, or draw your own. |
+| **Block Push Lab** | Two blocks on a floor. Count elastic collisions to get the digits of π, or push the small block and see the force it passes to the big one. |
 
-### Swell Escape — `games/swell-escape/`
+## Getting started
 
-A ball bounces inside a closed shape that has one small opening. Each bounce reflects at the correct angle. Every hit makes the wall swell at that spot, and repeat hits on the same area make the swelling grow faster, until the ball gets out. The wall never folds or crosses itself.
-
-- Make a random shape, draw your own closed loop, or pick a preset (circle, square, hexagon, star, heart).
-- Tap the wall to move the opening. Tap inside the shape to drop the ball there.
-- Sliders for ball speed, swelling per hit, growth on repeat hits, swelling width, opening width, and ball size.
-
-### Block Push Lab — `games/block-push-lab/`
-
-An interactive physics simulator of two blocks in contact, one light and one heavy.
-
-**Collision counter**: a heavy block slides into a small block near a wall, on a frictionless floor with perfectly elastic collisions. The page counts every hit. With a mass ratio of 100^n, the total count gives the first digits of π (3, 31, 314, 3141, 31415).
-
-**Steady push**: you push the small block, and it pushes the big one. The page shows:
-- the force needed to get both moving: `F ≥ μ·g·(m + M)`
-- the contact force passed to the big block: `F × M ÷ (m + M)`
-- the resulting acceleration: `F ÷ (m + M) − μ·g`
-
-## Run
-
-There's no build step. Open `index.html` in a browser, or serve the folder:
+Requires Node 20 or newer (see `.nvmrc`).
 
 ```bash
-npx serve .
+npm install
+npm run dev        # local server with hot reload
 ```
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Type-check, then build the static site into `dist/` |
+| `npm run preview` | Serve the built `dist/` locally |
+| `npm test` | Run unit tests once (`npm run test:watch` to keep watching) |
+| `npm run lint` | Lint all code |
+| `npm run check` | Type-check, lint and test (what CI runs, minus the build) |
+| `npm run new:game -- <id> "<Title>"` | Create a new game from the template |
+
+## Deploying
+
+`npm run build` produces a plain static site in `dist/`. Asset paths are relative, so it can be served from a domain root or any subfolder, by Nginx or any static host. Copy the contents of `dist/` to the server's web root.
+
+## Project layout
+
+```
+src/
+  index.html                home page (game picker)
+  home/                     home page script and styles
+  games/
+    registry.ts             finds every game's meta.ts automatically
+    swell-escape/
+      index.html            the game page
+      main.ts               page wiring: buttons, sliders, input, loop
+      sim.ts                simulation (pure logic, no DOM)
+      shapes.ts             preset and random shapes
+      render.ts             canvas drawing
+      preview.ts            animated thumbnail for the home page
+      meta.ts               title, description, tags, order
+      palette.css           the game's colour tokens (also used by its preview)
+      styles.css            game page layout
+      *.test.ts             unit tests
+    block-push-lab/         same structure
+  shared/
+    game.ts                 GameMeta and Preview contracts
+    engine/                 canvas sizing, game loop, theme colours, pointer input, audio
+    math/                   vectors, geometry, seeded random numbers
+    ui/                     DOM helpers (element lookup, slider binding)
+    styles/                 design tokens (light and dark), base styles, components
+scripts/new-game.mjs        game scaffold
+```
+
+### Rules that keep it maintainable
+
+- **One folder per game.** A game only imports its own files and `@shared/*`, never another game. ESLint enforces this.
+- **Simulation is separate from the page.** `sim.ts` (and similar files) never touches the DOM, so it can be unit tested and reused by the home page preview.
+- **Games register themselves.** Any `src/games/<id>/` with an `index.html` becomes the page `/games/<id>/`, and its `meta.ts` adds it to the home page. You don't need to edit a central list.
+- **Colours come from tokens.** Shared tokens live in `src/shared/styles/tokens.css` with light and dark values. Each game adds its own tokens in `palette.css`, which its home page preview loads too. Canvas code reads them through `themeColors()`, so drawings follow the theme.
+- **Code moves to `shared/` once a second game needs it.** Until then, it stays in the game.
 
 ## Adding a game
 
-1. Create `games/<game-name>/index.html` as a self-contained page.
-2. Add a link at the top back to the home page: `<a href="../../index.html">← All games</a>`.
-3. Add a card for it in the root `index.html` and update the game count.
+```bash
+npm run new:game -- gravity-wells "Gravity Wells"
+npm run dev    # open /games/gravity-wells/
+```
+
+This creates a working starter game with a test. It already appears on the home page. Then:
+
+1. Write the physics in `sim.ts` and test it in `sim.test.ts`.
+2. Draw it in `render.ts` and wire controls in `main.ts` and `index.html`.
+3. Fill in `meta.ts` (description, tags, order) and make `preview.ts` show a short loop of the game.
+4. Run `npm run check` before committing.

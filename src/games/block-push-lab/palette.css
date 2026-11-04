@@ -1,0 +1,4 @@
+/* Colour tokens for this game. Loaded by the game page and by its home page preview. */
+:root { --block-small: #e8a317; --block-big: #d6452f; --block-label: #ffffff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --block-small: #f2b53a; --block-big: #ee5f48; --block-label: #1a1206; } }
+:root[data-theme="dark"] { --block-small: #f2b53a; --block-big: #ee5f48; --block-label: #1a1206; }

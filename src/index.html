@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Physics Playground</title>
+  <meta name="description" content="Small physics games that run in the browser. Pick one to play.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="./shared/styles/base.css">
+  <link rel="stylesheet" href="./shared/styles/components.css">
+  <link rel="stylesheet" href="./home/home.css">
+</head>
+<body>
+  <main class="page home">
+    <header>
+      <p class="eyebrow" id="game-count">Games</p>
+      <h1>Physics Playground</h1>
+      <p class="sub">Small physics toys that run in the browser. Pick one to play.</p>
+    </header>
+    <section class="games" id="games" aria-label="Games"></section>
+    <noscript><p class="note">This page needs JavaScript to list the games.</p></noscript>
+  </main>
+  <template id="card-template">
+    <a class="card">
+      <canvas aria-hidden="true"></canvas>
+      <div class="card-body">
+        <h2></h2>
+        <p></p>
+        <div class="meta"></div>
+        <span class="play"></span>
+      </div>
+    </a>
+  </template>
+  <script type="module" src="./home/main.ts"></script>
+</body>
+</html>

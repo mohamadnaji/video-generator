@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Swell Escape</title>
+  <meta name="description" content="A ball bounces inside a closed shape with one opening; every hit swells the wall until the ball escapes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="../../shared/styles/components.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <a class="back-link" href="../../">&larr; All games</a>
+      <h1>Swell Escape</h1>
+      <p>A ball bounces inside a closed shape with one small opening. Every hit makes the wall swell at that spot, and repeat hits make the swelling grow faster, until the ball finds the way out.</p>
+    </header>
+
+    <div class="layout">
+      <section class="stage" aria-label="Simulation">
+        <canvas id="stage-canvas" class="stage-canvas" aria-label="Simulation area"></canvas>
+        <div class="toast" id="draw-msg" hidden>
+          <span id="draw-text">Draw a closed loop with your finger or mouse</span>
+          <button class="btn" id="cancel-draw" type="button">Cancel</button>
+        </div>
+        <div class="toast" id="escape-msg" hidden>
+          <strong>Escaped!</strong><span id="escape-text"></span>
+          <button class="btn primary" id="again-btn" type="button">Run again</button>
+          <button class="btn" id="new-btn" type="button">New random shape</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Bounces</span><b id="stat-bounces">0</b></div>
+          <div class="stat"><span>Time</span><b id="stat-time">0:00.0</b></div>
+          <div class="stat"><span>Biggest swell</span><b id="stat-swell">0%</b></div>
+        </div>
+        <p class="hint">Tap the wall to move the opening. Tap inside the shape to drop the ball there.</p>
+      </section>
+
+      <aside class="panel controls">
+        <div class="group">
+          <h2>Shape</h2>
+          <div class="btn-row">
+            <button class="btn primary" id="random-btn" type="button">Random shape</button>
+            <button class="btn" id="draw-btn" type="button" aria-pressed="false">Draw my own</button>
+          </div>
+          <div class="btn-row" id="presets">
+            <button class="btn" type="button" data-preset="circle">Circle</button>
+            <button class="btn" type="button" data-preset="square">Square</button>
+            <button class="btn" type="button" data-preset="hexagon">Hexagon</button>
+            <button class="btn" type="button" data-preset="star">Star</button>
+            <button class="btn" type="button" data-preset="heart">Heart</button>
+          </div>
+        </div>
+        <div class="group">
+          <h2>Run</h2>
+          <div class="btn-row">
+            <button class="btn" id="play-btn" type="button">Pause</button>
+            <button class="btn" id="restart-btn" type="button">Restart</button>
+          </div>
+        </div>
+        <div class="group">
+          <h2>Tuning</h2>
+          <div class="slider"><label for="speed">Ball speed</label><output id="speed-out" for="speed"></output><input id="speed" type="range" min="100" max="1200" step="10" value="480"></div>
+          <div class="slider"><label for="swell">Swelling per hit</label><output id="swell-out" for="swell"></output><input id="swell" type="range" min="0" max="20" step="0.5" value="5"></div>
+          <div class="slider"><label for="growth">Growth on repeat hits</label><output id="growth-out" for="growth"></output><input id="growth" type="range" min="0" max="1" step="0.05" value="0.35"></div>
+          <div class="slider"><label for="spread">Swelling width</label><output id="spread-out" for="spread"></output><input id="spread" type="range" min="2" max="20" step="1" value="7"></div>
+          <div class="slider"><label for="opening">Opening width</label><output id="opening-out" for="opening"></output><input id="opening" type="range" min="30" max="200" step="2" value="64"></div>
+          <div class="slider"><label for="radius">Ball size</label><output id="radius-out" for="radius"></output><input id="radius" type="range" min="6" max="30" step="1" value="13"></div>
+        </div>
+        <div class="legend">Calm<i></i>Swollen</div>
+      </aside>
+    </div>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

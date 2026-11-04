@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Block Push Lab</title>
+  <meta name="description" content="Two blocks in contact: count elastic collisions to find the digits of pi, or push one and see the force it passes on.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="../../shared/styles/components.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <a class="back-link" href="../../">&larr; All games</a>
+      <h1>Block Push Lab</h1>
+      <p>Two blocks in contact, one light and one heavy. Count how many times they collide, or push the small one and see the force it passes to the big one.</p>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button id="tab-collision" role="tab" type="button" aria-selected="true" aria-controls="mode-collision">Collision counter</button>
+      <button id="tab-push" role="tab" type="button" aria-selected="false" aria-controls="mode-push">Steady push</button>
+    </div>
+
+    <canvas id="stage-canvas" class="stage-canvas" aria-label="Simulation area"></canvas>
+
+    <section id="mode-collision" class="mode" role="tabpanel" aria-labelledby="tab-collision">
+      <div class="stats">
+        <div class="stat hero"><span>Collisions</span><b id="c-count">0</b></div>
+        <div class="stat"><span>Mass ratio</span><b id="c-ratio">1 : 100</b></div>
+        <div class="stat"><span>Small block speed</span><b id="c-v1">0.000</b></div>
+        <div class="stat"><span>Big block speed</span><b id="c-v2">−1.000</b></div>
+      </div>
+      <div class="panel controls">
+        <div class="slider"><label for="c-mass">Big block mass</label><output id="c-mass-out" for="c-mass"></output><input id="c-mass" type="range" min="0" max="4" step="1" value="1"></div>
+        <div class="slider"><label for="c-speed">Playback speed</label><output id="c-speed-out" for="c-speed"></output><input id="c-speed" type="range" min="0" max="3" step="1" value="1"></div>
+        <div class="btn-row">
+          <button class="btn primary" id="c-go" type="button">Start</button>
+          <button class="btn" id="c-reset" type="button">Reset</button>
+          <button class="btn" id="c-sound" type="button" aria-pressed="false">Sound off</button>
+        </div>
+      </div>
+      <p class="note">Frictionless floor, perfectly elastic hits, a wall on the left. The big block slides in, the small one bounces between it and the wall. With a mass ratio of 100<sup>n</sup>, the total collision count spells out the first digits of π: 3, 31, 314, 3141, 31415.</p>
+    </section>
+
+    <section id="mode-push" class="mode" role="tabpanel" aria-labelledby="tab-push" hidden>
+      <div class="stats">
+        <div class="stat hero"><span>Force on big block</span><b id="p-n">0 N</b></div>
+        <div class="stat"><span>Needed to start</span><b id="p-min">0 N</b></div>
+        <div class="stat"><span>Acceleration</span><b id="p-a">0 m/s²</b></div>
+        <div class="stat"><span>Status</span><b id="p-status"><span class="tag">—</span></b></div>
+      </div>
+      <div class="panel controls">
+        <div class="slider"><label for="p-m">Small block mass</label><output id="p-m-out" for="p-m"></output><input id="p-m" type="range" min="0.5" max="20" step="0.5" value="2"></div>
+        <div class="slider"><label for="p-M">Big block mass</label><output id="p-M-out" for="p-M"></output><input id="p-M" type="range" min="1" max="200" step="1" value="20"></div>
+        <div class="slider"><label for="p-F">Your push on small block</label><output id="p-F-out" for="p-F"></output><input id="p-F" type="range" min="0" max="600" step="1" value="50"></div>
+        <div class="slider"><label for="p-mu">Floor friction μ</label><output id="p-mu-out" for="p-mu"></output><input id="p-mu" type="range" min="0" max="0.8" step="0.01" value="0.2"></div>
+        <div class="btn-row"><button class="btn" id="p-reset" type="button">Reset position</button></div>
+      </div>
+      <p class="note">You push the small block; it pushes the big one. Both blocks start moving only when your push beats friction on both: <code>F ≥ μ·g·(m + M)</code>. Once moving, the small block passes on <code>F × M ÷ (m + M)</code>, so the heavier the big block, the closer that gets to your full push. Friction changes how fast they speed up, not that share.</p>
+    </section>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

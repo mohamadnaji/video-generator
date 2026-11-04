@@ -1,0 +1,45 @@
+@import "./tokens.css";
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* `hidden` must win over component display rules (e.g. .mode { display: flex }). */
+[hidden] { display: none !important; }
+
+html {
+  background-color: var(--bg);
+  color: var(--ink);
+  /* Graph-paper ground, painted on html so it covers the whole viewport. */
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Page wrapper with the safe-area side gutter. */
+.page {
+  max-width: var(--page-max, 900px);
+  margin: 0 auto;
+  padding-block: 24px 48px;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
