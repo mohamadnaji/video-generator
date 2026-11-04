@@ -3,279 +3,150 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Block Push Lab</title>
+<title>Physics Playground</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>
 body{margin:0}
 *{box-sizing:border-box}
-/* Layout: one lab bench — tab switch, canvas stage, readouts, controls stacked; graph-paper ground */
+/* Layout: graph-paper bench shared with the games; title, then one card per game with a live preview */
 :root{
-  --bg:#eef2f6; --grid:#d8e0ea; --panel:#ffffff; --ink:#14233a; --muted:#5b6b82;
-  --small:#e8a317; --big:#d6452f; --line:#c3cedb; --accent:#2457c5;
-  --display:"Archivo",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --bg:#eef2f6; --grid:#d8e0ea; --panel:#ffffff; --ink:#14233a; --muted:#5b6b82; --line:#c3cedb;
+  --accent:#2457c5; --field:#f4f7fa;
+  --block-a:#e8a317; --block-b:#d6452f; --wall:#2e405e; --hot:#e03458; --ball:#2f56cf;
+  --display:"Archivo",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0f1622; --grid:#1a2433; --panel:#162030; --ink:#e6edf6; --muted:#93a3b8;
-  --small:#f2b53a; --big:#ee5f48; --line:#2a3a50; --accent:#6f9bff; color-scheme:dark}}
+  --bg:#0f1622; --grid:#1a2433; --panel:#162030; --ink:#e6edf6; --muted:#93a3b8; --line:#2a3a50;
+  --accent:#6f9bff; --field:#121b28;
+  --block-a:#f2b53a; --block-b:#ee5f48; --wall:#a8bcda; --hot:#ff627c; --ball:#7e9dff; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f1622; --grid:#1a2433; --panel:#162030; --ink:#e6edf6; --muted:#93a3b8;
-  --small:#f2b53a; --big:#ee5f48; --line:#2a3a50; --accent:#6f9bff; color-scheme:dark}
-html,body{background:var(--bg);color:var(--ink)}
-body{font-family:var(--display);
+  --bg:#0f1622; --grid:#1a2433; --panel:#162030; --ink:#e6edf6; --muted:#93a3b8; --line:#2a3a50;
+  --accent:#6f9bff; --field:#121b28;
+  --block-a:#f2b53a; --block-b:#ee5f48; --wall:#a8bcda; --hot:#ff627c; --ball:#7e9dff; color-scheme:dark}
+html{background-color:var(--bg);color:var(--ink);
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:24px 24px;}
-.wrap{max-width:760px;margin:0 auto;padding-block:20px 40px;
+  background-size:24px 24px}
+body{background:transparent;color:var(--ink);font-family:var(--display)}
+.wrap{max-width:900px;margin:0 auto;padding-block:40px 56px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:16px}
-h1{font-size:clamp(26px,6vw,38px);font-weight:800;margin:0;letter-spacing:-.02em;text-wrap:balance}
-.sub{color:var(--muted);margin:4px 0 0;font-size:15px;line-height:1.5;max-width:60ch}
-.tabs{display:flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;width:fit-content}
-.tabs button{font:600 14px var(--display);border:0;background:transparent;color:var(--muted);padding:9px 14px;border-radius:7px;cursor:pointer}
-.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
-.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-canvas{display:block;width:100%;height:260px}
-.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.cell{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
-.cell span{display:block;font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.cell b{display:block;font:600 22px var(--mono);font-variant-numeric:tabular-nums;margin-top:4px;overflow-wrap:anywhere}
-.cell.hero b{font-size:34px}
-.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 18px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
-label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
-label output{font:400 13px var(--mono);color:var(--muted)}
-.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-input[type=range]{width:100%;accent-color:var(--accent)}
-.btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.btn{font:700 14px var(--display);padding:10px 16px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
-.btn.ghost{background:transparent;color:var(--ink)}
-button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.note{font-size:14px;line-height:1.55;color:var(--muted);margin:0;max-width:65ch}
-.note code{font-family:var(--mono);color:var(--ink);font-size:13px}
-.tag{display:inline-block;font:600 12px var(--mono);padding:3px 8px;border-radius:99px;border:1px solid var(--line)}
-.tag.ok{color:#1f8a4c;border-color:#1f8a4c}
-.tag.stuck{color:var(--big);border-color:var(--big)}
+  display:flex;flex-direction:column;gap:28px}
+.eyebrow{font:600 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+h1{font-size:clamp(34px,7vw,56px);font-weight:800;letter-spacing:-.03em;line-height:.98;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:16px;line-height:1.5;margin:12px 0 0;max-width:56ch}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px}
+.card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  color:inherit;text-decoration:none;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 12px 30px rgb(20 35 58 / .12)}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.card canvas{display:block;width:100%;aspect-ratio:16/9;background:var(--field);border-bottom:1px solid var(--line)}
+.body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.body h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.01em}
+.body p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.meta span{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:3px 9px}
+.play{margin-top:auto;padding-top:10px;font-weight:700;font-size:15px;color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
 </style>
 </head>
 <body>
-
-<div class="wrap">
+<main class="wrap">
   <header>
-    <h1>Block Push Lab</h1>
-    <p class="sub">Two blocks in contact, one light and one heavy. Count how many times they collide, or push the small one and see the force it passes to the big one.</p>
+    <p class="eyebrow">2 games</p>
+    <h1>Physics Playground</h1>
+    <p class="sub">Small physics toys that run in the browser. Pick one to play.</p>
   </header>
 
-  <div class="tabs" role="tablist">
-    <button id="tab-col" role="tab" aria-selected="true">Collision counter</button>
-    <button id="tab-push" role="tab" aria-selected="false">Steady push</button>
-  </div>
-
-  <div class="stage"><canvas id="cv"></canvas></div>
-
-  <!-- Collision mode -->
-  <section id="mode-col" style="display:flex;flex-direction:column;gap:12px">
-    <div class="read">
-      <div class="cell hero"><span>Collisions</span><b id="c-count">0</b></div>
-      <div class="cell"><span>Mass ratio</span><b id="c-ratio">1 : 100</b></div>
-      <div class="cell"><span>Small block speed</span><b id="c-v1">0.00</b></div>
-      <div class="cell"><span>Big block speed</span><b id="c-v2">−1.00</b></div>
-    </div>
-    <div class="controls">
-      <label for="c-mass"><div class="row">Big block mass <output id="c-mass-o">100 × small</output></div>
-        <input id="c-mass" type="range" min="0" max="4" step="1" value="1"></label>
-      <label for="c-speed"><div class="row">Playback speed <output id="c-speed-o">Normal</output></div>
-        <input id="c-speed" type="range" min="0" max="3" step="1" value="1"></label>
-      <div class="btns">
-        <button class="btn" id="c-go">Start</button>
-        <button class="btn ghost" id="c-reset">Reset</button>
-        <button class="btn ghost" id="c-sound" aria-pressed="false">Sound off</button>
+  <section class="games" aria-label="Games">
+    <a class="card" href="games/swell-escape/index.html">
+      <canvas id="pv-swell" aria-hidden="true"></canvas>
+      <div class="body">
+        <h2>Swell Escape</h2>
+        <p>A ball bounces inside a closed shape with one small opening. Each hit swells the wall at that spot, and repeat hits make it grow, until the ball gets out.</p>
+        <div class="meta"><span>Reflection</span><span>Random shapes</span><span>Draw your own</span></div>
+        <span class="play">Play Swell Escape &rarr;</span>
       </div>
-    </div>
-    <p class="note">Frictionless floor, perfectly elastic hits, a wall on the left. The big block slides in, the small one bounces between it and the wall. With a mass ratio of 100<sup>n</sup>, the total collision count spells out the first digits of π: 3, 31, 314, 3141, 31415.</p>
+    </a>
+    <a class="card" href="games/block-push-lab/index.html">
+      <canvas id="pv-block" aria-hidden="true"></canvas>
+      <div class="body">
+        <h2>Block Push Lab</h2>
+        <p>Two blocks on a frictionless floor. Count the elastic collisions to find the digits of &pi;, or push the small block and see the force it passes on.</p>
+        <div class="meta"><span>Elastic collisions</span><span>Forces</span><span>Friction</span></div>
+        <span class="play">Play Block Push Lab &rarr;</span>
+      </div>
+    </a>
   </section>
-
-  <!-- Push mode -->
-  <section id="mode-push" style="display:none;flex-direction:column;gap:12px">
-    <div class="read">
-      <div class="cell hero"><span>Force on big block</span><b id="p-n">0 N</b></div>
-      <div class="cell"><span>Needed to start</span><b id="p-min">0 N</b></div>
-      <div class="cell"><span>Acceleration</span><b id="p-a">0 m/s²</b></div>
-      <div class="cell"><span>Status</span><b id="p-status"><span class="tag">—</span></b></div>
-    </div>
-    <div class="controls">
-      <label for="p-m"><div class="row">Small block mass <output id="p-m-o">1 kg</output></div>
-        <input id="p-m" type="range" min="0.5" max="20" step="0.5" value="2"></label>
-      <label for="p-M"><div class="row">Big block mass <output id="p-M-o">20 kg</output></div>
-        <input id="p-M" type="range" min="1" max="200" step="1" value="20"></label>
-      <label for="p-F"><div class="row">Your push on small block <output id="p-F-o">50 N</output></div>
-        <input id="p-F" type="range" min="0" max="600" step="1" value="50"></label>
-      <label for="p-mu"><div class="row">Floor friction μ <output id="p-mu-o">0.20</output></div>
-        <input id="p-mu" type="range" min="0" max="0.8" step="0.01" value="0.2"></label>
-      <div class="btns"><button class="btn ghost" id="p-reset">Reset position</button></div>
-    </div>
-    <p class="note">You push the small block; it pushes the big one. Both blocks start moving only when your push beats friction on both: <code>F ≥ μ·g·(m + M)</code>. Once moving, the small block passes on <code>F × M ÷ (m + M)</code>, so the heavier the big block, the closer that gets to your full push. Friction changes how fast they speed up, not that share.</p>
-  </section>
-</div>
+</main>
 
 <script>
 (()=>{
-const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
-let W=0,H=260,DPR=1;
-const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-function resize(){DPR=window.devicePixelRatio||1;W=cv.clientWidth;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);}
-window.addEventListener('resize',()=>{resize();if(mode==='col')layoutCol(false);});
-resize();
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let C={};
+function colors(){const cs=getComputedStyle(document.documentElement);
+  ['field','wall','hot','ball','block-a','block-b','muted','line','grid'].forEach(k=>C[k]=cs.getPropertyValue('--'+k).trim())}
+colors();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',colors);
+new MutationObserver(colors).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 
-let mode='col';
-const $=id=>document.getElementById(id);
-function setMode(m){mode=m;
-  $('tab-col').setAttribute('aria-selected',m==='col');$('tab-push').setAttribute('aria-selected',m==='push');
-  $('mode-col').style.display=m==='col'?'flex':'none';$('mode-push').style.display=m==='push'?'flex':'none';}
-$('tab-col').onclick=()=>setMode('col');$('tab-push').onclick=()=>setMode('push');
+function setup(id){const cv=document.getElementById(id),ctx=cv.getContext('2d');
+  const o={cv,ctx,w:320,h:180};
+  const fit=()=>{const d=devicePixelRatio||1;cv.width=Math.round(cv.clientWidth*d);cv.height=Math.round(cv.clientHeight*d);
+    o.w=cv.clientWidth;o.h=cv.clientHeight;ctx.setTransform(d,0,0,d,0,0)};
+  new ResizeObserver(fit).observe(cv);fit();return o}
 
-/* ---------- audio ---------- */
-let actx=null,sound=false,lastClick=0;
-function click(){if(!sound||!actx)return;const t=actx.currentTime;if(t-lastClick<0.025)return;lastClick=t;
-  const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.value=1800;
-  g.gain.setValueAtTime(0.08,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.03);o.connect(g).connect(actx.destination);o.start(t);o.stop(t+0.04);}
-$('c-sound').onclick=()=>{sound=!sound;if(sound&&!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
-  $('c-sound').textContent=sound?'Sound on':'Sound off';$('c-sound').setAttribute('aria-pressed',sound);};
-
-/* ---------- collision mode ---------- */
-const FLOOR=200, WALL=40;
-const speeds=[0.25,1,4,16], speedNames=['Slow','Normal','Fast','Very fast'];
-let c={};
-function layoutCol(fresh){
-  const n=+$('c-mass').value; const M=Math.pow(100,n);
-  const ws=34, wb=Math.min(150,50+n*24);
-  if(fresh||!c.M){c={m:1,M,n,ws,wb,x1:0,x2:0,v1:0,v2:-1,count:0,running:false,done:false};
-    c.x1=WALL+ (Math.max(W*0.32,140)-WALL); c.x2=Math.max(W*0.6,c.x1+ws+60);
-    c.V=Math.max(60,W*0.12); c.v2=-c.V;}
-}
-function resetCol(){layoutCol(true);updColRead();$('c-go').textContent='Start';}
-function updColRead(){
-  $('c-count').textContent=c.count.toLocaleString();
-  $('c-ratio').textContent='1 : '+c.M.toLocaleString();
-  $('c-v1').textContent=(c.v1/c.V).toFixed(3);$('c-v2').textContent=(c.v2/c.V).toFixed(3).replace('-','−');
-}
-$('c-mass').oninput=()=>{$('c-mass-o').textContent=Math.pow(100,+$('c-mass').value).toLocaleString()+' × small';resetCol();};
-$('c-speed').oninput=()=>{$('c-speed-o').textContent=speedNames[+$('c-speed').value];};
-$('c-go').onclick=()=>{if(c.done)resetCol();c.running=!c.running;$('c-go').textContent=c.running?'Pause':'Resume';};
-$('c-reset').onclick=resetCol;
-
-function stepCol(dt){
-  let t=dt, guard=0;
-  while(t>0&&guard++<200000){
-    // time to block-block hit
-    let tb=Infinity, tw=Infinity;
-    const gap=c.x2-(c.x1+c.ws), rel=c.v1-c.v2;
-    if(rel>0) tb=Math.max(0,gap/rel);
-    if(c.v1<0) tw=Math.max(0,(c.x1-WALL)/(-c.v1));
-    const te=Math.min(tb,tw);
-    if(te>t){c.x1+=c.v1*t;c.x2+=c.v2*t;break;}
-    c.x1+=c.v1*te;c.x2+=c.v2*te;t-=te;
-    if(tb<=tw){const m=c.m,M=c.M,u1=c.v1,u2=c.v2;
-      c.v1=((m-M)*u1+2*M*u2)/(m+M); c.v2=((M-m)*u2+2*m*u1)/(m+M); c.x2=c.x1+c.ws;}
-    else{c.v1=-c.v1;c.x1=WALL;}
-    c.count++;click();
-    if(c.v1>=0&&c.v2>=c.v1){c.done=true;}
+// Swell Escape preview: ball in a blob with a gap; wall bulges where hit.
+const S=setup('pv-swell'), M=120, base=[], bump=new Float32Array(M), heat=new Float32Array(M);
+for(let i=0;i<M;i++){const t=i/M*2*Math.PI;base.push(1+0.12*Math.cos(3*t+1)+0.07*Math.cos(5*t))}
+const GAP=[M*0.75-5,M*0.75+5];
+const isGap=i=>i>=GAP[0]&&i<=GAP[1];
+let b={a:0.3,r:0.2,vx:0.5,vy:0.33,x:0,y:0};b.x=0.1;b.y=0.15;
+function shapePts(cx,cy,R){const p=[];for(let i=0;i<M;i++){const t=i/M*2*Math.PI,r=R*(base[i]+bump[i]);p.push({x:cx+Math.cos(t)*r,y:cy+Math.sin(t)*r})}return p}
+function drawSwell(dt){
+  const {ctx,w,h}=S, R=Math.min(w,h)*0.36, cx=w/2, cy=h/2+6;
+  // physics in unit space
+  b.x+=b.vx*dt;b.y+=b.vy*dt;
+  const ang=Math.atan2(b.y,b.x), idx=((Math.round(ang/(2*Math.PI)*M)%M)+M)%M, rr=Math.hypot(b.x,b.y);
+  const wallR=base[idx]+bump[idx]-0.07;
+  if(rr>wallR){
+    if(isGap(idx)){ if(rr>1.9){b.x=0;b.y=0.1;const t=Math.random()*6.28;b.vx=Math.cos(t)*0.6;b.vy=Math.sin(t)*0.6;bump.fill(0);heat.fill(0)} }
+    else{const nx=b.x/rr,ny=b.y/rr,vn=b.vx*nx+b.vy*ny;if(vn>0){b.vx-=2*vn*nx;b.vy-=2*vn*ny}
+      b.x=nx*wallR;b.y=ny*wallR;
+      for(let k=-6;k<=6;k++){const j=(idx+k+M)%M;if(isGap(j))continue;const wgt=Math.exp(-k*k/8);bump[j]=Math.min(0.32,bump[j]+0.022*(1+heat[idx]*0.4)*wgt);heat[j]+=wgt}}
   }
-  if(c.done&&c.x2>W+200){c.running=false;$('c-go').textContent='Run again';}
+  ctx.fillStyle=C.field;ctx.fillRect(0,0,w,h);
+  ctx.fillStyle=C.grid;for(let x=16;x<w;x+=20)for(let y=16;y<h;y+=20)ctx.fillRect(x-1,y-1,2,2);
+  const P=shapePts(cx,cy,R);
+  ctx.lineWidth=4;ctx.lineCap='round';
+  for(let i=0;i<M;i++){if(isGap(i)||isGap(i+1))continue;const a=P[i],q=P[(i+1)%M];
+    ctx.strokeStyle=heat[i]>1.5?C.hot:C.wall;ctx.globalAlpha=heat[i]>1.5?Math.min(1,0.5+heat[i]/8):1;
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+  ctx.globalAlpha=1;
+  ctx.fillStyle=C.ball;ctx.beginPath();ctx.arc(cx+b.x*R,cy+b.y*R,Math.max(5,R*0.07),0,7);ctx.fill();
 }
 
-function drawCol(){
-  const ink=css('--ink'),muted=css('--muted'),line=css('--line');
-  ctx.clearRect(0,0,W,H);
-  // floor + wall
-  ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(WALL,FLOOR);ctx.lineTo(W,FLOOR);ctx.moveTo(WALL,FLOOR);ctx.lineTo(WALL,30);ctx.stroke();
-  ctx.strokeStyle=muted;ctx.lineWidth=1;for(let y=36;y<FLOOR;y+=14){ctx.beginPath();ctx.moveTo(WALL,y);ctx.lineTo(WALL-10,y+10);ctx.stroke();}
-  // blocks (small never draws into wall)
-  const x1=Math.max(WALL,c.x1);
-  block(x1,c.ws,css('--small'),'1');
-  block(Math.max(c.x2,x1+c.ws),c.wb,css('--big'),c.M.toLocaleString());
-  ctx.fillStyle=muted;ctx.font='600 12px "IBM Plex Mono",monospace';ctx.textAlign='left';
-  ctx.fillText(c.done?'Done — no more collisions':(c.running?'Running':'Ready'),WALL+8,FLOOR+30);
-}
-function supN(n){return '';}
-function block(x,w,color,label){
-  ctx.fillStyle=color;ctx.fillRect(x,FLOOR-w,w,w);
-  ctx.fillStyle='#fff';ctx.font=`700 ${Math.min(22,w/3)}px Archivo,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-  const txt=label.length>7?'10^'+Math.log10(c.M):label;
-  ctx.fillText(txt,x+w/2,FLOOR-w/2);ctx.textBaseline='alphabetic';
+// Block Push Lab preview: big block slides into small block near a wall.
+const B=setup('pv-block');
+let blk={x1:0.32,v1:0,x2:0.6,v2:-0.18,m:1,Mb:16,hits:0,t:0};
+function drawBlock(dt){
+  const {ctx,w,h}=B, floor=h*0.74, s1=h*0.16, s2=h*0.32, L=w-40, x0=24;
+  const s=blk; const sub=20;
+  for(let k=0;k<sub;k++){const d=dt/sub;s.x1+=s.v1*d;s.x2+=s.v2*d;
+    if(s.x1<0){s.x1=0;s.v1=-s.v1;s.hits++}
+    const g=s.x2-(s.x1+s1/L); if(g<0&&s.v1>s.v2){const m=s.m,M2=s.Mb,u1=s.v1,u2=s.v2;
+      s.v1=((m-M2)*u1+2*M2*u2)/(m+M2);s.v2=((M2-m)*u2+2*m*u1)/(m+M2);s.x2=s.x1+s1/L;s.hits++}}
+  if(s.x2>1.3){s.x1=0.32;s.v1=0;s.x2=0.6;s.v2=-0.18;s.hits=0}
+  ctx.fillStyle=C.field;ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle=C.muted;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x0,floor);ctx.lineTo(w,floor);ctx.moveTo(x0,floor);ctx.lineTo(x0,h*0.18);ctx.stroke();
+  ctx.strokeStyle=C.line;ctx.lineWidth=1;for(let y=h*0.2;y<floor;y+=8){ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x0-8,y+8);ctx.stroke()}
+  ctx.fillStyle=C['block-a'];ctx.fillRect(x0+s.x1*L,floor-s1,s1,s1);
+  ctx.fillStyle=C['block-b'];ctx.fillRect(x0+s.x2*L,floor-s2,s2,s2);
+  ctx.fillStyle=C.muted;ctx.font='600 12px "IBM Plex Mono",monospace';ctx.textAlign='right';ctx.fillText('collisions '+s.hits,w-14,22);
 }
 
-/* ---------- push mode ---------- */
-const g=9.81;
-let p={x:0,v:0};
-function params(){return{m:+$('p-m').value,M:+$('p-M').value,F:+$('p-F').value,mu:+$('p-mu').value};}
-function physics(){
-  const {m,M,F,mu}=params(); const Fmin=mu*g*(m+M);
-  let a=0,N=0,moving=false;
-  const kinetic=p.v>1e-6;
-  if(kinetic||F>Fmin){ a=F/(m+M)-(kinetic||F>Fmin?mu*g:0);
-    if(kinetic&&a<0&&p.v<=0){a=0;}
-    moving=true; N=M*F/(m+M); }
-  else{ N=Math.max(0,F-mu*m*g); }
-  return{m,M,F,mu,Fmin,a,N,moving};
-}
-function updPushRead(s){
-  $('p-m-o').textContent=s.m+' kg';$('p-M-o').textContent=s.M+' kg';$('p-F-o').textContent=s.F+' N';$('p-mu-o').textContent=s.mu.toFixed(2);
-  $('p-n').textContent=s.N.toFixed(1)+' N';$('p-min').textContent=s.Fmin.toFixed(1)+' N';
-  $('p-a').textContent=(s.moving?Math.max(s.a,0):0).toFixed(2)+' m/s²';
-  const st=$('p-status');
-  if(s.F>s.Fmin) st.innerHTML='<span class="tag ok">Moving</span>';
-  else if(p.v>0.01) st.innerHTML='<span class="tag">Slowing</span>';
-  else st.innerHTML='<span class="tag stuck">Stuck</span>';
-}
-['p-m','p-M','p-F','p-mu'].forEach(id=>$(id).addEventListener('input',()=>updPushRead(physics())));
-$('p-reset').onclick=()=>{p={x:0,v:0};};
-
-function stepPush(dt){
-  const s=physics();
-  if(s.F>s.Fmin){p.v+=s.a*dt;}
-  else if(p.v>0){ // friction decelerates, push still helps
-    const dec=s.mu*g - s.F/(s.m+s.M); p.v=Math.max(0,p.v-Math.max(dec,0)*dt);}
-  p.v=Math.min(p.v,40);p.x+=p.v*dt;updPushRead(s);return s;
-}
-function drawPush(s){
-  const ink=css('--ink'),muted=css('--muted'),acc=css('--accent');
-  ctx.clearRect(0,0,W,H);
-  const scale=40; // px per metre
-  // floor with moving ticks
-  ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,FLOOR);ctx.lineTo(W,FLOOR);ctx.stroke();
-  ctx.fillStyle=muted;ctx.font='400 11px "IBM Plex Mono",monospace';ctx.textAlign='center';
-  const off=(p.x*scale)%scale, base=Math.floor(p.x);
-  for(let i=-1;i<W/scale+2;i++){const x=i*scale-off;ctx.strokeStyle=muted;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,FLOOR);ctx.lineTo(x,FLOOR+(((base+i)%5===0)?10:5));ctx.stroke();
-    if((base+i)%5===0)ctx.fillText((base+i)+' m',x,FLOOR+24);}
-  // sizes from mass (area ∝ mass, clamped)
-  const sz=m=>Math.max(28,Math.min(150,22*Math.sqrt(m)));
-  const ws=sz(s.m), wb=sz(s.M);
-  const total=ws+wb, startX=Math.max(90,(W-total)/2);
-  const x1=startX, x2=startX+ws;
-  ctx.fillStyle=css('--small');ctx.fillRect(x1,FLOOR-ws,ws,ws);
-  ctx.fillStyle=css('--big');ctx.fillRect(x2,FLOOR-wb,wb,wb);
-  ctx.fillStyle='#fff';ctx.textBaseline='middle';
-  ctx.font=`700 ${Math.min(16,ws/3)}px Archivo,sans-serif`;ctx.fillText(s.m+'kg',x1+ws/2,FLOOR-ws/2);
-  ctx.font=`700 ${Math.min(20,wb/3)}px Archivo,sans-serif`;ctx.fillText(s.M+'kg',x2+wb/2,FLOOR-wb/2);
-  ctx.textBaseline='alphabetic';
-  // applied force arrow
-  const maxF=600, len=s.F/maxF*(x1-14);
-  if(s.F>0) arrow(x1-6-len,FLOOR-ws/2,x1-6,FLOOR-ws/2,acc,3,'F = '+s.F+' N',true);
-  // contact force arrow drawn on big block face
-  if(s.N>0){const nl=Math.min(wb*0.9,s.N/maxF*200+12);arrow(x2+2,FLOOR-Math.min(ws,wb)/2-18,x2+2+nl,FLOOR-Math.min(ws,wb)/2-18,ink,2,s.N.toFixed(0)+' N',false);}
-}
-function arrow(xa,y,xb,yb,col,w,label,above){
-  ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(xa,y);ctx.lineTo(xb-8,yb);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(xb,yb);ctx.lineTo(xb-10,yb-6);ctx.lineTo(xb-10,yb+6);ctx.closePath();ctx.fill();
-  ctx.font='600 12px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.fillText(label,(xa+xb)/2,y-10);
-}
-
-/* ---------- loop ---------- */
 let last=performance.now();
-function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;
-  if(mode==='col'){if(c.running)stepCol(dt*speeds[+$('c-speed').value]);updColRead();drawCol();}
-  else{drawPush(stepPush(dt));}
-  requestAnimationFrame(frame);}
-resetCol();updPushRead(physics());requestAnimationFrame(frame);
+function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;drawSwell(dt);drawBlock(dt);if(!reduce)requestAnimationFrame(frame)}
+if(reduce){for(let i=0;i<240;i++){drawSwell(1/60);drawBlock(1/60)}}else requestAnimationFrame(frame);
 })();
 </script>
 </body>
