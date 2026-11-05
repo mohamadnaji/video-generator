@@ -1,0 +1,170 @@
+{
+  "name": "bomb-7-steps",
+  "title": "How to Survive a Bomb – 7 Easy Steps",
+  "format": "Escalating fails",
+  "style": {"accent": "#ffd23f", "host_name": "Ollie"},
+  "voices": {
+    "host": {"voice": "am_puck", "speed": 1.05},
+    "narrator": {"voice": "bm_george", "speed": 0.95}
+  },
+  "scenes": [
+    {
+      "id": "title", "set": "studio", "color": "#1d3f6e", "music": "mystery", "camera": "push_in",
+      "host": {"hidden": true},
+      "objects": [{"id": "bomb", "prop": "bomb", "x": 0.5, "scale": 1.3, "anim": "pulse"}],
+      "card": {"kicker": "A SURVIVAL FIELD GUIDE", "title": "HOW TO\nSURVIVE A BOMB", "subtitle": "7 EASY STEPS", "y": 0.2, "size": 112},
+      "lines": [{"id": "a", "by": "narrator", "text": "How to survive a bomb... in seven easy steps.", "gap": 0.4}],
+      "events": [{"at": "a.end-0.6", "do": "sfx", "name": "ding"}],
+      "tail": 0.7
+    },
+    {
+      "id": "step1", "set": "park", "music": "calm", "camera": "drift", "enter": "flash",
+      "header": {"title": "STEP 1", "meter": {"label": "CONFIDENCE", "from": 100, "to": 100}},
+      "host": {"pose": "talk", "face": "serious", "x": 0.38},
+      "objects": [{"id": "bomb", "prop": "bomb", "x": 0.8, "scale": 0.7, "anim": "pulse"}],
+      "lines": [
+        {"id": "a", "by": "host", "text": "If you see a bomb, the first thing you should do is...", "speed": 0.9},
+        {"id": "run", "by": "host", "text": "Run!", "caption": "RUN!", "gap": 0.35},
+        {"id": "vo", "by": "narrator", "text": "But wait... what if you're not fast enough? Not everyone is an Olympic sprinter.", "gap": 1.2}
+      ],
+      "events": [
+        {"at": "a+1.0", "do": "pose", "pose": "point"},
+        {"at": "run", "do": "pose", "pose": "run", "face": "worried", "dir": "left", "sfx": "whoosh"},
+        {"at": "run+0.2", "do": "move", "x": -0.25, "dur": 2.0},
+        {"at": "run", "do": "fx", "fx": "speed_lines", "dir": "left", "dur": 1.6},
+        {"at": "run+0.1", "do": "sfx", "name": "steps"}
+      ]
+    },
+    {
+      "id": "step2", "set": "city", "music": "upbeat", "camera": "drift", "enter": "flash",
+      "header": {"title": "STEP 2", "meter": {"label": "CONFIDENCE", "from": 100, "to": 90}},
+      "host": {"pose": "proud", "face": "happy", "x": 0.42, "props": ["red_shoes"]},
+      "objects": [{"id": "bomb", "prop": "bomb", "x": 1.15, "scale": 0.7, "args": {"legs": true}, "frames": 4, "dir": "left", "hidden": true}],
+      "lines": [
+        {"id": "a", "by": "host", "text": "Okay, easy. Wear better shoes. Now you can run faster!", "caption": "Okay, easy. Wear better shoes. Now you can run FASTER!"},
+        {"id": "vo", "by": "narrator", "text": "But wait... what if the bomb is faster than you?", "gap": 1.8}
+      ],
+      "events": [
+        {"at": 0.15, "do": "sfx", "name": "ding"},
+        {"at": "a.end+0.1", "do": "pose", "pose": "run", "face": "happy", "dir": "left"},
+        {"at": "a.end+0.1", "do": "banner", "text": "MONTAGE!", "color": "#ff3d6e", "dur": 1.5, "y": 0.27, "sfx": "scratch"},
+        {"at": "a.end+0.1", "do": "fx", "fx": "speed_lines", "dir": "left", "dur": 4.5},
+        {"at": "vo-0.2", "do": "show", "target": "bomb"},
+        {"at": "vo-0.2", "do": "move", "target": "bomb", "x": 0.72, "dur": 1.6},
+        {"at": "vo", "do": "face", "face": "shock"},
+        {"at": "vo", "do": "sfx", "name": "steps"}
+      ],
+      "tail": 0.6
+    },
+    {
+      "id": "step3", "set": "city", "tone": "dusk", "music": "tense", "camera": "push_in", "enter": "flash",
+      "header": {"title": "STEP 3", "meter": {"label": "CONFIDENCE", "from": 90, "to": 75}},
+      "host": {"pose": "talk", "face": "serious", "x": 0.35},
+      "objects": [
+        {"id": "shelter", "prop": "shelter", "x": 0.8, "scale": 0.95, "z": 0},
+        {"id": "bomb", "prop": "bomb", "x": 0.14, "scale": 0.5, "hidden": true, "z": 1, "anim": "pulse"}
+      ],
+      "lines": [
+        {"id": "a", "by": "host", "text": "Then you need a safe place, and get behind solid cover!", "caption": "Then find a safe place and get behind SOLID COVER!", "speed": 1.05},
+        {"id": "vo", "by": "narrator", "text": "But what if the explosion is too powerful?", "gap": 0.5}
+      ],
+      "events": [
+        {"at": "a+1.0", "do": "pose", "pose": "point", "dir": "right"},
+        {"at": "vo", "do": "show", "target": "bomb", "sfx": "pop"},
+        {"at": "vo+0.3", "do": "grow", "target": "bomb", "scale": 1.6, "dur": 1.8},
+        {"at": "vo+0.3", "do": "sfx", "name": "rise"},
+        {"at": "vo+0.6", "do": "pose", "pose": "scared", "face": "shock", "dir": "left"}
+      ],
+      "tail": 0.7
+    },
+    {
+      "id": "step4", "set": "room", "music": "upbeat", "camera": "drift", "enter": "flash",
+      "header": {"title": "STEP 4", "meter": {"label": "CONFIDENCE", "from": 75, "to": 60}},
+      "host": {"pose": "talk", "face": "happy", "x": 0.3},
+      "objects": [
+        {"id": "bomb", "prop": "bomb", "x": 0.72, "scale": 0.55, "anim": "pulse"},
+        {"id": "amb", "prop": "ambulance", "x": 1.15, "y": 0.0, "scale": 0.25, "dir": "left", "hidden": true}
+      ],
+      "lines": [
+        {"id": "a", "by": "host", "text": "Simple! Call emergency services.", "speed": 1.1},
+        {"id": "b", "by": "host", "text": "Let the professionals handle it!", "gap": 1.0},
+        {"id": "vo", "by": "narrator", "text": "But what if the bomb goes off before they arrive?", "gap": 0.4}
+      ],
+      "events": [
+        {"at": "a.end", "do": "pose", "pose": "phone", "face": "serious", "props": ["phone"]},
+        {"at": "a.end+0.05", "do": "sfx", "name": "dial"},
+        {"at": "b.end", "do": "show", "target": "amb"},
+        {"at": "b.end", "do": "move", "target": "amb", "x": 0.95, "dur": 3.5},
+        {"at": "vo", "do": "tag", "text": "AMBULANCE ETA: 14 MIN", "x": 0.5, "y": 0.4, "dur": 3.2, "color": "#fff36b"},
+        {"at": "vo+0.6", "do": "tag", "text": "FUSE: 3 SEC", "x": 0.68, "y": 0.47, "dur": 2.6, "color": "#ff6b6b"},
+        {"at": "vo+0.6", "do": "face", "face": "worried"}
+      ],
+      "tail": 0.6
+    },
+    {
+      "id": "step5", "set": "studio", "color": "#b0187f", "music": "hype", "camera": "push_in", "enter": "flash",
+      "header": {"title": "STEP 5", "meter": {"label": "CONFIDENCE", "from": 60, "to": 30}},
+      "host": {"pose": "proud", "face": "happy", "x": 0.5, "props": ["helmet", "jacket", "red_shoes"]},
+      "lines": [
+        {"id": "a", "by": "host", "text": "Okay! Now we're talking! Protect yourself!", "caption": "Okay, NOW we're talking. Protect yourself!", "speed": 1.2},
+        {"id": "vo", "by": "narrator", "text": "But what if none of that actually protects you?", "gap": 0.6}
+      ],
+      "events": [
+        {"at": 0, "do": "sfx", "name": "fanfare"},
+        {"at": 0, "do": "fx", "fx": "confetti", "dur": 2.6},
+        {"at": "a+0.8", "do": "pose", "pose": "cheer"},
+        {"at": "vo+0.3", "do": "pose", "pose": "stand", "face": "worried", "sfx": "deflate"}
+      ],
+      "tail": 0.5
+    },
+    {
+      "id": "step6", "set": "room", "tone": "night", "music": "sad", "camera": "push_in", "enter": "fade",
+      "header": {"title": "STEP 6", "meter": {"label": "CONFIDENCE", "from": 30, "to": 5}},
+      "host": {"pose": "sit", "face": "sad", "x": 0.45, "props": ["helmet"]},
+      "objects": [{"id": "chair", "prop": "chair", "x": 0.47, "scale": 1.0, "z": 0}],
+      "lines": [
+        {"id": "a", "by": "host", "text": "Well... I guess there's only one thing left.", "speed": 0.82},
+        {"id": "b", "by": "host", "text": "Accept... your destiny.", "caption": "Accept your destiny.", "speed": 0.75, "gap": 1.0}
+      ],
+      "events": [
+        {"at": 0, "do": "fx", "fx": "rain", "dur": 30},
+        {"at": 0, "do": "sfx", "name": "rain", "gain": 1.0},
+        {"at": "b.end+0.1", "do": "sfx", "name": "trombone"}
+      ],
+      "tail": 1.9
+    },
+    {
+      "id": "step7", "set": "void", "music": "dread", "camera": "static", "enter": "fade",
+      "header": {"title": "STEP 7", "meter": {"label": "CONFIDENCE", "from": 5, "to": 0}},
+      "host": {"pose": "stand", "face": "serious", "x": 0.5},
+      "lines": [
+        {"id": "a", "by": "host", "text": "Actually... let's be honest.", "speed": 0.88, "gap": 0.6},
+        {"id": "b", "by": "host", "text": "If a bomb explodes near you, there's no magic trick that guarantees survival.", "speed": 0.92, "gap": 0.7},
+        {"id": "c", "by": "host", "text": "Sometimes... the best survival strategy is not being there in the first place.", "speed": 0.9, "gap": 0.8}
+      ],
+      "events": [
+        {"at": 0.3, "do": "camera", "zoom": 2.1, "focus": "host", "dur": 9.0},
+        {"at": 0, "do": "fx", "fx": "dim", "level": 0.7, "dur": 2.0}
+      ],
+      "tail": 0.6
+    },
+    {
+      "id": "boom", "set": "void", "music": "none", "camera": "static", "enter": "cut",
+      "host": {"pose": "flail", "face": "shock", "x": 0.5, "props": ["soot"]},
+      "lines": [{"id": "a", "by": "host", "text": "Wait! Who put the bomb here?!", "caption": "WAIT... WHO PUT THE BOMB HERE?!", "speed": 1.3, "gap": 0.5}],
+      "events": [
+        {"at": 0, "do": "fx", "fx": "explosion", "x": 0.85, "y": 0.35, "dur": 1.0},
+        {"at": 0, "do": "camera", "zoom": 1.5, "focus": "host", "dur": 0.01},
+        {"at": 0.05, "do": "banner", "text": "BOOM", "color": "#ff4d4d", "dur": 0.9, "y": 0.22, "size": 160}
+      ],
+      "tail": 0.4
+    },
+    {
+      "id": "end", "set": "void", "tone": "dark", "music": "none", "camera": "static", "enter": "cut",
+      "host": {"hidden": true},
+      "card": {"title": "THE END.", "subtitle": "Follow for more", "y": 0.42, "size": 120},
+      "lines": [{"id": "a", "by": "narrator", "text": "The end.", "gap": 0.6, "speed": 0.85}],
+      "tail": 1.4
+    }
+  ]
+}
