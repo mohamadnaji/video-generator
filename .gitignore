@@ -3,3 +3,10 @@ dist/
 coverage/
 .DS_Store
 *.log
+
+# generated reel/story outputs and downloaded voice models
+tools/*/models/
+tools/*/cache/
+tools/*/reels/*/out/
+tools/*/stories/*/out/
+__pycache__/

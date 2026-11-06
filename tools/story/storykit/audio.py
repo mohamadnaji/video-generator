@@ -161,7 +161,7 @@ def _pop():
 
 
 def _ding():
-    return (tone(1318, 1.0, 'sine', 0.002, 0.9) + tone(2637, 0.6, 'sine', 0.002, 0.5) * 0.3) * 0.35
+    return (tone(1318, 1.0, 'sine', 0.002, 0.9) + tone(2637, 1.0, 'sine', 0.002, 0.9) * 0.3) * 0.35
 
 
 def _fanfare():
