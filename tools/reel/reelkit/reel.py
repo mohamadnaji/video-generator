@@ -87,13 +87,18 @@ class Reel:
         if self.host_fn:
             hs = self.host_fn(sc['id'], lt, self.ctx)
             if hs:
-                from .host import draw_prof
+                from .host import draw_prof, draw_prof2
                 mouth = 0.0
                 if speaking and speaking['by'] == 'host' and speaking['mouth'] and lt < speaking['end']:
                     k = int((lt - speaking['start']) * FPS)
                     mouth = speaking['mouth'][min(k, len(speaking['mouth']) - 1)]
-                draw_prof(img, hs['x'], hs['y'], hs.get('size', 220), self.theme, t, face=hs.get('face', 'happy'),
-                          mouth=mouth, look=hs.get('look', 0.0))
+                talking = bool(speaking and speaking['by'] == 'host' and lt < speaking['end'])
+                if self.theme.get('host_style') == 'v2':
+                    draw_prof2(img, hs['x'], hs['y'], hs.get('size', 220), self.theme, t, face=hs.get('face', 'happy'),
+                               mouth=mouth, look=hs.get('look', 0.0), speaking=talking)
+                else:
+                    draw_prof(img, hs['x'], hs['y'], hs.get('size', 220), self.theme, t, face=hs.get('face', 'happy'),
+                              mouth=mouth, look=hs.get('look', 0.0))
         if speaking:
             caption(ImageDraw.Draw(img), speaking, lt - speaking['start'], self.theme, self.caption_y)
         return img.convert('RGB')
@@ -142,9 +147,12 @@ class Reel:
         print(path)
 
 
-def main(reel, name):
+def main(reel, name, after_voice=None):
+    """after_voice(reel): optional hook to adjust scene lengths from line timings (e.g. fit a sim run), then re-voice."""
     cmd = sys.argv[1] if len(sys.argv) > 1 else 'sheet'
     reel.voice()
+    if after_voice:
+        after_voice(reel)
     if cmd == 'sheet':
         reel.sheet([float(a) for a in sys.argv[2:]])
     elif cmd == 'video':
