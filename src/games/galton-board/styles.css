@@ -1,0 +1,6 @@
+/* Marble Galton Board: tall stage beside the read-outs and controls. */
+@import "./palette.css";
+:root { --page-max: 900px; }
+
+#stage-canvas { aspect-ratio: 4 / 5; width: min(100%, 560px); margin-inline: auto; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 18px; }

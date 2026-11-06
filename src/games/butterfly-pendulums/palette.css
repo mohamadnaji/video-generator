@@ -1,0 +1,4 @@
+/* Colour tokens for Butterfly Pendulums. Loaded by the game page and by its home page preview. */
+:root { --pivot: #14233a; --rod: #5b6b82; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pivot: #e6edf6; --rod: #93a3b8; } }
+:root[data-theme="dark"] { --pivot: #e6edf6; --rod: #93a3b8; }

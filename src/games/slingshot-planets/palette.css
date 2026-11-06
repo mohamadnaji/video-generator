@@ -1,0 +1,4 @@
+/* Colour tokens for Slingshot Planets. Space stays dark in both themes; the frame around it follows the theme. */
+:root { --space: #0b1220; --space-ink: #e6edf6; --space-muted: #8a9ab0; --sun: #ffb43a; --giant: #c98b5a; --moon: #7fb2ff; --orbit: #4cd68f; --crash: #ff6a4d; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --space: #070c16; } }
+:root[data-theme="dark"] { --space: #070c16; }

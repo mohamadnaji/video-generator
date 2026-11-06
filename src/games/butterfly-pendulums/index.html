@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Butterfly Pendulums</title>
+  <meta name="description" content="Hundreds of double pendulums start almost identical, then split into chaos: the butterfly effect.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="../../shared/styles/components.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <a class="back-link" href="../../">&larr; All games</a>
+      <h1>Butterfly Pendulums</h1>
+      <p>Every pendulum starts a tiny fraction of a degree further out than the one before. One arm and they stay in step forever. Two arms and the tiny gap grows until they fly apart.</p>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button id="arms-1" role="tab" type="button" aria-selected="false">1 arm (simple)</button>
+      <button id="arms-2" role="tab" type="button" aria-selected="true">2 arms (double)</button>
+    </div>
+
+    <canvas id="stage-canvas" class="stage-canvas" aria-label="Pendulum simulation"></canvas>
+
+    <div class="stats">
+      <div class="stat hero"><span>Time</span><b id="s-time">0.0 s</b></div>
+      <div class="stat"><span>Spread</span><b id="s-spread">0%</b></div>
+      <div class="stat"><span>Split after</span><b id="s-split">—</b></div>
+      <div class="stat"><span>Gravity</span><b id="s-g">9.81 m/s²</b></div>
+    </div>
+
+    <div class="panel controls">
+      <div class="slider"><label for="count">Pendulums</label><output id="count-out" for="count"></output><input id="count" type="range" min="0" max="10" step="1" value="9"></div>
+      <div class="slider"><label for="gap">Gap between neighbours</label><output id="gap-out" for="gap"></output><input id="gap" type="range" min="-7" max="-1" step="1" value="-4"></div>
+      <div class="slider"><label for="angle">Starting angle</label><output id="angle-out" for="angle"></output><input id="angle" type="range" min="10" max="179" step="1" value="120"></div>
+      <div class="slider"><label for="l2">Lower arm length</label><output id="l2-out" for="l2"></output><input id="l2" type="range" min="0.3" max="1.6" step="0.05" value="1"></div>
+      <div class="slider"><label for="speed">Playback speed</label><output id="speed-out" for="speed"></output><input id="speed" type="range" min="0" max="3" step="1" value="2"></div>
+      <div class="group">
+        <h2>Gravity (changes live)</h2>
+        <div class="btn-row" id="gravity-row">
+          <button class="btn" type="button" data-g="1.62">Moon</button>
+          <button class="btn" type="button" data-g="3.71">Mars</button>
+          <button class="btn on" type="button" data-g="9.81">Earth</button>
+          <button class="btn" type="button" data-g="24.79">Jupiter</button>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="go-btn" type="button">Release</button>
+        <button class="btn" id="reset-btn" type="button">Reset</button>
+        <button class="btn" id="reel-btn" type="button" aria-pressed="false">Reel 9:16</button>
+      </div>
+    </div>
+
+    <p class="note">A double pendulum is <em>chaotic</em>: its motion is fully set by the laws of physics, yet a starting difference too small to measure doubles again and again until it takes over. That is the butterfly effect, and it's why weather forecasts break down after about two weeks. A simple pendulum isn't chaotic, so the same tiny gap stays tiny.</p>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

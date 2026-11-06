@@ -6,6 +6,9 @@ Small physics games that run in the browser. The home page lists every game so y
 | --- | --- |
 | **Swell Escape** | A ball bounces inside a closed shape with one small opening. Every hit swells the wall at that spot, repeat hits make it grow faster, and the ball keeps going until it gets out. Random shapes, presets, or draw your own. |
 | **Block Push Lab** | Two blocks on a floor. Count elastic collisions to get the digits of π, or push the small block and see the force it passes to the big one. |
+| **Butterfly Pendulums** | Up to 1,000 double pendulums start a tiny fraction of a degree apart. They swing as one, then split into a rainbow of chaos. Switch to simple pendulums to see them stay in step, and change gravity live. |
+| **Marble Galton Board** | Marbles bounce through rows of pegs and pile up into a bell curve, with a fitted curve drawn on top. Tilt the board or add wind and the whole curve slides sideways. |
+| **Slingshot Planets** | Drag to launch moons around a star, with a predicted path while you aim. Too slow crashes, too fast is lost to space. Random sprays, a perfect-orbit launch, and an optional giant planet that disturbs orbits. |
 
 ## Getting started
 
@@ -50,11 +53,14 @@ src/
       styles.css            game page layout
       *.test.ts             unit tests
     block-push-lab/         same structure
+    butterfly-pendulums/    same structure
+    galton-board/           same structure
+    slingshot-planets/      same structure
   shared/
     game.ts                 GameMeta and Preview contracts
     engine/                 canvas sizing, game loop, theme colours, pointer input, audio
     math/                   vectors, geometry, seeded random numbers
-    ui/                     DOM helpers (element lookup, slider binding)
+    ui/                     DOM helpers (element lookup, slider binding, 9:16 reel frame toggle)
     styles/                 design tokens (light and dark), base styles, components
 scripts/new-game.mjs        game scaffold
 ```

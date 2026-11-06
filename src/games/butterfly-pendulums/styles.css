@@ -1,0 +1,6 @@
+/* Butterfly Pendulums: stage, read-outs, controls. */
+@import "./palette.css";
+:root { --page-max: 900px; }
+
+#stage-canvas { aspect-ratio: 4 / 3; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 18px; }

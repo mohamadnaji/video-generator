@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Marble Galton Board</title>
+  <meta name="description" content="Marbles bounce through pegs and always pile up into a bell curve. Tilt the board or add wind to shift it.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="../../shared/styles/components.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <a class="back-link" href="../../">&larr; All games</a>
+      <h1>Marble Galton Board</h1>
+      <p>Every marble takes a random path through the pegs. No single marble is predictable, but together they always build the same bell curve.</p>
+    </header>
+
+    <canvas id="stage-canvas" class="stage-canvas" aria-label="Galton board simulation"></canvas>
+
+    <div class="stats">
+      <div class="stat hero"><span>Landed</span><b id="s-landed">0</b></div>
+      <div class="stat"><span>Average bin</span><b id="s-mean">—</b></div>
+      <div class="stat"><span>Spread (σ)</span><b id="s-sd">—</b></div>
+      <div class="stat"><span>Theory σ = √rows ÷ 2</span><b id="s-theory">—</b></div>
+    </div>
+
+    <div class="panel controls">
+      <div class="slider"><label for="rows">Peg rows</label><output id="rows-out" for="rows"></output><input id="rows" type="range" min="4" max="16" step="1" value="12"></div>
+      <div class="slider"><label for="total">Marbles</label><output id="total-out" for="total"></output><input id="total" type="range" min="100" max="3000" step="100" value="1000"></div>
+      <div class="slider"><label for="rate">Drop rate</label><output id="rate-out" for="rate"></output><input id="rate" type="range" min="5" max="200" step="5" value="40"></div>
+      <div class="slider"><label for="tilt">Board tilt (live)</label><output id="tilt-out" for="tilt"></output><input id="tilt" type="range" min="-10" max="10" step="0.5" value="0"></div>
+      <div class="slider"><label for="wind">Wind (live)</label><output id="wind-out" for="wind"></output><input id="wind" type="range" min="-0.2" max="0.2" step="0.01" value="0"></div>
+      <div class="slider"><label for="bounce">Peg bounciness</label><output id="bounce-out" for="bounce"></output><input id="bounce" type="range" min="0.2" max="0.8" step="0.05" value="0.45"></div>
+      <div class="btn-row">
+        <button class="btn primary" id="go-btn" type="button">Drop</button>
+        <button class="btn" id="reset-btn" type="button">Reset</button>
+        <button class="btn on" id="curve-btn" type="button" aria-pressed="true">Bell curve on</button>
+        <button class="btn" id="reel-btn" type="button" aria-pressed="false">Reel 9:16</button>
+      </div>
+    </div>
+
+    <p class="note">At each peg a marble goes left or right, roughly a coin flip. Add up many coin flips and you get the <em>normal distribution</em>: most marbles end near the middle, few reach the edges. This is the central limit theorem, the same reason heights, test scores and measurement errors form bell curves. Tilt or wind adds a steady push to every flip, so the whole curve slides sideways but keeps its shape.</p>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

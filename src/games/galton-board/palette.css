@@ -1,0 +1,4 @@
+/* Colour tokens for Marble Galton Board. Loaded by the game page and by its home page preview. */
+:root { --peg: #14233a; --marble: #2457c5; --pile: #e8a317; --curve: #d6452f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --peg: #c9d4e3; --marble: #6f9bff; --pile: #f2b53a; --curve: #ee5f48; } }
+:root[data-theme="dark"] { --peg: #c9d4e3; --marble: #6f9bff; --pile: #f2b53a; --curve: #ee5f48; }

@@ -87,3 +87,11 @@
   padding: 10px 14px; box-shadow: 0 8px 30px rgb(var(--shadow) / 0.18);
 }
 .toast strong { font-family: var(--font-display); font-size: 18px; }
+
+/* Reel frame: a 9:16 stage for recording vertical videos. Toggled by bindReelToggle(). */
+body.reel .stage-canvas {
+  aspect-ratio: 9 / 16 !important;
+  height: auto !important;
+  width: min(100%, calc(82vh * 9 / 16)) !important;
+  margin-inline: auto;
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Slingshot Planets</title>
+  <meta name="description" content="Launch moons around a star: too slow and they crash, too fast and they escape. Find the orbit.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="../../shared/styles/components.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <a class="back-link" href="../../">&larr; All games</a>
+      <h1>Slingshot Planets</h1>
+      <p>Press anywhere in space and pull back like a slingshot. The dashed line shows where the moon will go. Let go to launch it.</p>
+    </header>
+
+    <canvas id="stage-canvas" class="stage-canvas" aria-label="Space: drag to launch a moon"></canvas>
+
+    <div class="stats">
+      <div class="stat hero"><span>Locked in orbit</span><b id="s-locked">0</b></div>
+      <div class="stat"><span>Launched</span><b id="s-launched">0</b></div>
+      <div class="stat"><span>Crashed</span><b id="s-crashed">0</b></div>
+      <div class="stat"><span>Lost to space</span><b id="s-escaped">0</b></div>
+    </div>
+
+    <div class="panel controls">
+      <div class="slider"><label for="mass">Star mass</label><output id="mass-out" for="mass"></output><input id="mass" type="range" min="0.5" max="3" step="0.1" value="1"></div>
+      <div class="slider"><label for="spray-count">Moons per spray</label><output id="spray-count-out" for="spray-count"></output><input id="spray-count" type="range" min="1" max="40" step="1" value="20"></div>
+      <div class="slider"><label for="speed">Playback speed</label><output id="speed-out" for="speed"></output><input id="speed" type="range" min="0" max="3" step="1" value="2"></div>
+      <div class="btn-row">
+        <button class="btn primary" id="spray-btn" type="button">Random spray</button>
+        <button class="btn" id="perfect-btn" type="button">Perfect orbit</button>
+        <button class="btn" id="giant-btn" type="button" aria-pressed="false">Giant planet off</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="pause-btn" type="button">Pause</button>
+        <button class="btn" id="clear-btn" type="button">Clear</button>
+        <button class="btn" id="reel-btn" type="button" aria-pressed="false">Reel 9:16</button>
+      </div>
+    </div>
+
+    <p class="note">Gravity pulls a moon toward the star; its sideways speed carries it past. At the <em>circular speed</em> <code>v = √(GM ÷ r)</code> the two balance and it circles forever. Slower and it falls inward, faster and its path stretches into an ellipse, and at <code>√2</code> times circular speed (escape speed) it never comes back. A giant planet adds small tugs that can wreck an orbit that was fine without it.</p>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
